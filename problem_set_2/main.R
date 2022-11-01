@@ -67,7 +67,7 @@ ssr_r = sum(reg_r$residuals^2) # save the SSR restricted
 ssr_u = sum(reg_u$residuals^2) # save the SSR unrestricted
 
 k = length(!is.na(alpha_hat)) # check the number of variables we include
-p = k - 2
+p = k - 2 - 1 # for the restrictions subtract 2 as otherwise have duplicated restriction, and 1 because no restriction on intercept
 n = nrow(youth_survey) # check the number of observations
 
 F_stat = ((ssr_r-ssr_u)/p)/(ssr_u/(n-k)) # calculate the F statistics
