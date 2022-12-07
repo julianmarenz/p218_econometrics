@@ -20,7 +20,7 @@ if (length(pkgs_install) > 0) {
   install.packages(pkgs_install, dependencies=TRUE)
 }
 
-lapply(pkgs_required, require, character.only = TRUE) # load packages
+lapply(pkgs_required[!pkgs_required %in% "plm"], require, character.only = TRUE) # load packages apart from plm as it masks dplyr lag function
 
 # Exercise 2. (a) ---------------------------------------------------------------------
 
@@ -74,3 +74,24 @@ stargazer(reg1, type = "latex", out = paste0(overleaf, "reg1.tex"))
 
 freg1 = felm(mrdrte ~ exec + unem + d90 + d93 | id + year, data = murder)
 stargazer(freg1, type = "latex", out = paste0(overleaf, "freg1.tex"))
+
+coefficients = freg1$coefficients[1:2]
+vcov = freg1$vcv[1:2, 1:2]
+
+# Exercise 4. (c) ---------------------------------------------------------------------
+
+freg2 = felm(mrdrte ~ 1 | id, data = murder)
+freg3 = felm(exec ~ 1 | id, data = murder)
+freg4 = felm(unem ~ 1 | id, data = murder)
+freg5 = felm(d90 ~ 1 | id, data = murder)
+freg6 = felm(d93 ~ 1 | id, data = murder)
+
+rmrdrte = freg2$residuals
+rexec = freg3$residuals
+runem = freg4$residuals
+rd90 = freg5$residuals
+rd93 = freg6$residuals
+
+residreg1 = lm(rmrdrte ~ 0 + rexec + runem + rd90 + rd93)
+stargazer(residreg1, type = "latex", out = paste0(overleaf, "residreg1.tex"))
+
